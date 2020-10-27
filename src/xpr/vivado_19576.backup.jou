@@ -1,0 +1,38 @@
+#-----------------------------------------------------------
+# Vivado v2019.2 (64-bit)
+# SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
+# IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+# Start of session at: Thu Jun 25 18:31:26 2020
+# Process ID: 19576
+# Current directory: C:/Users/fanqi/Desktop/lab_4/Source_Code_Lab4/lab_4
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent20932 C:\Users\fanqi\Desktop\lab_4\Source_Code_Lab4\lab_4\lab_4.xpr
+# Log file: C:/Users/fanqi/Desktop/lab_4/Source_Code_Lab4/lab_4/vivado.log
+# Journal file: C:/Users/fanqi/Desktop/lab_4/Source_Code_Lab4/lab_4\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/fanqi/Desktop/lab_4/Source_Code_Lab4/lab_4/lab_4.xpr
+update_compile_order -fileset sources_1
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+launch_simulation
+source testbench.tcl
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+launch_simulation
+source testbench.tcl
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim

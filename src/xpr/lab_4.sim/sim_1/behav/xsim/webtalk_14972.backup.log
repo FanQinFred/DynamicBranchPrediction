@@ -1,0 +1,15 @@
+#-----------------------------------------------------------
+# Webtalk v2019.2 (64-bit)
+# SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
+# IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+# Start of session at: Tue Oct 27 16:51:59 2020
+# Process ID: 14972
+# Current directory: C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/lab_4/lab_4.sim/sim_1/behav/xsim
+# Command line: wbtcv.exe -mode batch -source C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/lab_4/lab_4.sim/sim_1/behav/xsim/xsim.dir/testbench_behav/webtalk/xsim_webtalk.tcl -notrace
+# Log file: C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/lab_4/lab_4.sim/sim_1/behav/xsim/webtalk.log
+# Journal file: C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/lab_4/lab_4.sim/sim_1/behav/xsim\webtalk.jou
+#-----------------------------------------------------------
+source C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/lab_4/lab_4.sim/sim_1/behav/xsim/xsim.dir/testbench_behav/webtalk/xsim_webtalk.tcl -notrace
+INFO: [Common 17-186] 'C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/lab_4/lab_4.sim/sim_1/behav/xsim/xsim.dir/testbench_behav/webtalk/usage_statistics_ext_xsim.xml' has been successfully sent to Xilinx on Tue Oct 27 16:52:05 2020. For additional details about this file, please refer to the WebTalk help file at C:/Xilinx/Vivado/2019.2/doc/webtalk_introduction.html.
+webtalk_transmit: Time (s): cpu = 00:00:00 ; elapsed = 00:00:06 . Memory (MB): peak = 92.590 ; gain = 0.000
+INFO: [Common 17-206] Exiting Webtalk at Tue Oct 27 16:52:05 2020...
