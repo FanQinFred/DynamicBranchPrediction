@@ -26,8 +26,8 @@ module branch_predict (
     parameter BHT_DEPTH = 10;
 
 // 
-    reg [5:0] BHT [(1<<BHT_DEPTH)-1 : 0];
-    reg [1:0] PHT [(1<<PHT_DEPTH)-1:0];
+    reg [5:0] BHT [(1<<BHT_DEPTH)-1 : 0];  //前六次branch历史记录
+    reg [1:0] PHT [(1<<PHT_DEPTH)-1:0];    //
     
     integer i,j;
     wire [(PHT_DEPTH-1):0] PHT_index;
@@ -72,6 +72,7 @@ module branch_predict (
             end
         end
         else if(branchM) begin
+            BHT[update_BHT_index]<={{update_BHR_value[4:0]},{1'b1}};  //qf
             // 此处应该添加你的更新逻辑的代码
             // 此处应该添加你的更新逻辑的代码
             // 此处应该添加你的更新逻辑的代码
@@ -94,14 +95,31 @@ module branch_predict (
         end
         else begin
             case(PHT[update_PHT_index])
-                // 此处应该添加你的更新逻辑的代码
-                // 此处应该添加你的更新逻辑的代码
-                // 此处应该添加你的更新逻辑的代码
-                // 此处应该添加你的更新逻辑的代码
-                // 此处应该添加你的更新逻辑的代码
-                // 此处应该添加你的更新逻辑的代码
-                // 此处应该添加你的更新逻辑的代码
-                // 此处应该添加你的更新逻辑的代码
+                2'b11:
+                    case(branchM)
+                        1'b1:PHT[update_PHT_index]<=2'b11;
+                        0'b0:PHT[update_PHT_index]<=2'b10;
+                        default:
+                    endcase
+                2'b10:
+                    case(branchM)
+                        1'b1:PHT[update_PHT_index]<=2'b11;
+                        0'b0:PHT[update_PHT_index]<=2'b01;
+                        default:
+                    endcase
+                2'b01:
+                    case(branchM)
+                        1'b1:PHT[update_PHT_index]<=2'b10;
+                        0'b0:PHT[update_PHT_index]<=2'b00;
+                        default:
+                    endcase
+                2'b00:
+                    case(branchM)
+                        1'b1:PHT[update_PHT_index]<=2'b10;
+                        0'b0:PHT[update_PHT_index]<=2'b00;
+                        default:
+                    endcase
+                default:
             endcase 
         end
     end
