@@ -69,6 +69,24 @@ module datapath(
 	wire [4:0] writeregW;
 	wire [31:0] aluoutW,readdataW,resultW;
 
+	//动态分支预测模块
+	branch_predict (
+    .clk(clk), 
+	.rst(rst),
+    .InstrD(),
+    .flushD(),
+    .stallD(),
+    .pred_takeE(),
+    .pcF(pcF),
+    .pcM(pcM),
+    .branchM(),         // M阶段是否是分支指令
+    .actual_takeM(),    // 实际是否跳转
+
+    output wire branchD,        // 译码阶段是否是跳转指令   
+    output wire pred_takeD,      // 预测是否跳转  //assign pred_takeD = branchD & pred_takeF_r;  
+    output wire preErrorE
+);
+
 	//冒险模块
 	hazard h(
 
@@ -111,6 +129,11 @@ module datapath(
 	mux2 #(32) pcbrmux(pcplus4F,pcbranchD,pcsrcD,pcnextbrFD);  //地址计算部分
 	mux2 #(32) pcmux(pcnextbrFD, {pcplus4D[31:28],instrD[25:0],2'b00}, jumpD, pcnextFD);  //地址计算部分
 
+
+
+	wire pcD,pcE,pcM;
+
+
 	//寄存器访问
 	regfile rf(clk,regwriteW,rsD,rtD,writeregW,resultW,srcaD,srcbD);
 
@@ -118,6 +141,11 @@ module datapath(
 	//取指触发器
 	pc #(32) pcreg(clk,rst,~stallF,pcnextFD,pcF);  //地址计算部分
 	adder pcadd1(pcF,32'b100,pcplus4F);  //地址计算部分
+    
+	//new
+	flopenrc #(32) pcFD(clk,rst,~stallD,flushD,pcF,pcD);
+	floprc #(32) pcDE(clk,rst,flushE,pcD,pcE);
+	floprc #(32) pcEM(clk,rst,flushE,pcE,pcM);
 
 	//译指触发器
 	flopenr #(32) r1D(clk,rst,~stallD,pcplus4F,pcplus4D);  //地址计算部分

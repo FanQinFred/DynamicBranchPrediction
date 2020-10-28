@@ -3,22 +3,27 @@
 
 module branch_predict (
     input wire clk, rst,
-    
+    input wire[31:0] InstrD,
     input wire flushD,
     input wire stallD,
-
+    input wire pred_takeE,
     input wire [31:0] pcF,
     input wire [31:0] pcM,
-
     input wire branchM,         // M阶段是否是分支指令
     input wire actual_takeM,    // 实际是否跳转
 
     output wire branchD,        // 译码阶段是否是跳转指令   
-    output wire pred_takeD      // 预测是否跳转
+    output wire pred_takeD,      // 预测是否跳转  //assign pred_takeD = branchD & pred_takeF_r;  
+    output wire preErrorE
 );
     wire pred_takeF;
     reg pred_takeF_r;
-    assign branchD = //判断译码阶段是否是分支指令
+    assign branchD = InstrD[31:27]==5'b000100;//判断译码阶段是否是分支指令
+
+    assign preErrorE = (branchE == pred_takeE);
+
+    // 译码阶段输出最终的预测结果
+    assign pred_takeD = branchD & pred_takeF_r;  
 
 // 定义参数
     parameter Strongly_not_taken = 2'b00, Weakly_not_taken = 2'b01, Weakly_taken = 2'b11, Strongly_taken = 2'b10;
@@ -44,7 +49,7 @@ module branch_predict (
 
         // --------------------------pipeline------------------------------
             always @(posedge clk) begin
-                if(rst | flushD) begin
+                if(rst | flushD |flushE |flushM) begin
                     pred_takeF_r <= 0;
                 end
                 else if(~stallD) begin
@@ -72,15 +77,11 @@ module branch_predict (
             end
         end
         else if(branchM) begin
-            BHT[update_BHT_index]<={{update_BHR_value[4:0]},{1'b1}};  //qf
+            BHT[update_BHT_index]<={update_BHR_value[4:0],1'b1};  //qf
             // 此处应该添加你的更新逻辑的代码
-            // 此处应该添加你的更新逻辑的代码
-            // 此处应该添加你的更新逻辑的代码
-            // 此处应该添加你的更新逻辑的代码
-            // 此处应该添加你的更新逻辑的代码
-            // 此处应该添加你的更新逻辑的代码
-            // 此处应该添加你的更新逻辑的代码
-            // 此处应该添加你的更新逻辑的代码
+        end
+        else begin
+            BHT[update_BHT_index]<={update_BHR_value[4:0],1'b0};  //qf
         end
     end
 // ---------------------------------------BHT初始化以及更新---------------------------------------
@@ -124,7 +125,4 @@ module branch_predict (
         end
     end
 // ---------------------------------------PHT初始化以及更新---------------------------------------
-
-    // 译码阶段输出最终的预测结果
-    assign pred_takeD = branchD & pred_takeF_r;  
 endmodule
