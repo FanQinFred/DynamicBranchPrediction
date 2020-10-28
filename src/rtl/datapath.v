@@ -69,23 +69,36 @@ module datapath(
 	wire [4:0] writeregW;
 	wire [31:0] aluoutW,readdataW,resultW;
 
-	//动态分支预测模块
-	branch_predict (
-    .clk(clk), 
-	.rst(rst),
-    .InstrD(),
-    .flushD(),
-    .stallD(),
-    .pred_takeE(),
-    .pcF(pcF),
-    .pcM(pcM),
-    .branchM(),         // M阶段是否是分支指令
-    .actual_takeM(),    // 实际是否跳转
+	assign flushD=flushE;
+	
+	wire flushM;
 
-    output wire branchD,        // 译码阶段是否是跳转指令   
-    output wire pred_takeD,      // 预测是否跳转  //assign pred_takeD = branchD & pred_takeF_r;  
-    output wire preErrorE
-);
+	wire preErrorE;
+	wire pred_takeD,pred_takeE;
+	wire actual_takeE;
+
+	assign flushD=flushE;
+	assign flushE=flushM;
+	assign flushM=preErrorM;
+
+	//动态分支预测模块
+	branch_predict branch_predict(
+		//input
+		.clk(clk), .rst(rst),
+		.instrD(instrD),
+		.flushD(flushD),.flushE(flushE),.flushM(flushM),
+		.stallD(stallD),
+		.pred_takeE(pred_takeE),            // 预测的是否跳转
+		.actual_takeE(equalE & branchE),    // 实际是否跳转
+
+	    .branchM(branchM),
+
+		.pcF(pcF),
+		.pcM(pcM),
+		//output
+		.pred_takeD(pred_takeD),       // D阶段使用
+		.preErrorE(preErrorE)          // E阶段判断预测是否正确
+    );
 
 	//冒险模块
 	hazard h(
@@ -129,23 +142,36 @@ module datapath(
 	mux2 #(32) pcbrmux(pcplus4F,pcbranchD,pcsrcD,pcnextbrFD);  //地址计算部分
 	mux2 #(32) pcmux(pcnextbrFD, {pcplus4D[31:28],instrD[25:0],2'b00}, jumpD, pcnextFD);  //地址计算部分
 
-
-
 	wire pcD,pcE,pcM;
-
 
 	//寄存器访问
 	regfile rf(clk,regwriteW,rsD,rtD,writeregW,resultW,srcaD,srcbD);
 
 
+    // 分支预测不正确则回退
+	mux2 #(32) pcError(pcnextFD,pcM,preErrorE,pcnext);  //地址计算部分
+
 	//取指触发器
-	pc #(32) pcreg(clk,rst,~stallF,pcnextFD,pcF);  //地址计算部分
+	pc #(32) pcreg(clk,rst,~stallF,pcnext,pcF);  //地址计算部分
 	adder pcadd1(pcF,32'b100,pcplus4F);  //地址计算部分
     
 	//new
 	flopenrc #(32) pcFD(clk,rst,~stallD,flushD,pcF,pcD);
 	floprc #(32) pcDE(clk,rst,flushE,pcD,pcE);
 	floprc #(32) pcEM(clk,rst,flushE,pcE,pcM);
+	floprc #(32) pred_takeD_DE(clk,rst,flushE,pred_takeD,pred_takeE);
+	//branchD, branchE,branchM
+	wire branchE,branchM;
+	floprc #(32) branchDE(clk,rst,flushE,branchD,branchE);
+	floprc #(32) branchEM(clk,rst,flushE,branchE,branchM);
+	//equalE
+	wire equalE;
+	floprc #(32) equalDE(clk,rst,flushE,equalD,equalE);
+    //preErrorM
+	floprc #(32) preErrorEM(clk,rst,flushE,preErrorE,preErrorM);
+
+
+
 
 	//译指触发器
 	flopenr #(32) r1D(clk,rst,~stallD,pcplus4F,pcplus4D);  //地址计算部分
