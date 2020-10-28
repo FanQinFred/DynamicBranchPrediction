@@ -11,6 +11,7 @@ module branch_predict (
 
     input wire pred_takeE,      // 预测的是否跳�?
     input wire actual_takeE,    // 实际是否跳转
+    input wire actual_takeM,
 
     input wire branchM,
 
@@ -26,7 +27,7 @@ module branch_predict (
     reg pred_takeD_reg;
 
     //判断译码阶段是否是分支指�?
-    assign branchD = instrD[31:27]==5'b000100;
+    assign branchD = (instrD[31:26]==6'b000100);
     
     //EX阶段判断预测是否正确
     assign preErrorE = (actual_takeE != pred_takeE);
@@ -35,7 +36,7 @@ module branch_predict (
     assign pred_takeD = branchD & pred_takeD_reg;  
 
     // 定义参数
-    parameter Strongly_not_taken = 2'b00, Weakly_not_taken = 2'b01, Weakly_taken = 2'b11, Strongly_taken = 2'b10;
+    parameter Strongly_not_taken = 2'b00, Weakly_not_taken = 2'b01, Weakly_taken = 2'b10, Strongly_taken = 2'b11;
     parameter PHT_DEPTH = 6;
     parameter BHT_DEPTH = 10;
 
@@ -77,11 +78,12 @@ module branch_predict (
                 BHT[j] <= 0;
             end
         end
-        else if(branchM) begin
+        else if(branchM & actual_takeM) begin
             BHT[update_BHT_index]<={update_BHR_value[4:0],1'b1};
         end
-        else begin
+        else if(branchM & !actual_takeM) begin
             BHT[update_BHT_index]<={update_BHR_value[4:0],1'b0};
+        end else begin
         end
     end
 
@@ -92,33 +94,35 @@ module branch_predict (
             end
         end
         else begin
-            case(PHT[update_PHT_index])
-                2'b11:
-                    case(branchM)
-                        1'b1:PHT[update_PHT_index]<=2'b11;
-                        1'b0:PHT[update_PHT_index]<=2'b10;
-                        default:;
-                    endcase
-                2'b10:
-                    case(branchM)
-                        1'b1:PHT[update_PHT_index]<=2'b11;
-                        1'b0:PHT[update_PHT_index]<=2'b01;
-                        default:;
-                    endcase
-                2'b01:
-                    case(branchM)
-                        1'b1:PHT[update_PHT_index]<=2'b10;
-                        1'b0:PHT[update_PHT_index]<=2'b00;
-                        default:;
-                    endcase
-                2'b00:
-                    case(branchM)
-                        1'b1:PHT[update_PHT_index]<=2'b10;
-                        1'b0:PHT[update_PHT_index]<=2'b00;
-                        default:;
-                    endcase
-                default:;
-            endcase 
+            if(branchM) begin
+                case(PHT[update_PHT_index])
+                    2'b11:
+                        case(actual_takeM)
+                            1'b1:PHT[update_PHT_index]<=2'b11;
+                            1'b0:PHT[update_PHT_index]<=2'b10;
+                            default:;
+                        endcase
+                    2'b10:
+                        case(actual_takeM)
+                            1'b1:PHT[update_PHT_index]<=2'b11;
+                            1'b0:PHT[update_PHT_index]<=2'b01;
+                            default:;
+                        endcase
+                    2'b01:
+                        case(actual_takeM)
+                            1'b1:PHT[update_PHT_index]<=2'b10;
+                            1'b0:PHT[update_PHT_index]<=2'b00;
+                            default:;
+                        endcase
+                    2'b00:
+                        case(actual_takeM)
+                            1'b1:PHT[update_PHT_index]<=2'b01;
+                            1'b0:PHT[update_PHT_index]<=2'b00;
+                            default:;
+                        endcase
+                    default:;
+                endcase 
+            end
         end
     end
 endmodule

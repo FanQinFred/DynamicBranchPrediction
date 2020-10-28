@@ -10,21 +10,20 @@ INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/fanqi/Documents/GitHub/Dyn
 INFO: [VRFC 10-311] analyzing module aludec
 INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/branchpre.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module branch_predict
-INFO: [VRFC 10-2458] undeclared symbol branchD, assumed default net type wire [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/branchpre.v:29]
+INFO: [VRFC 10-2458] undeclared symbol branchD, assumed default net type wire [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/branchpre.v:30]
 INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/controller.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module controller
 INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module datapath
 WARNING: [VRFC 10-3676] redeclaration of ansi port 'stallF' is not allowed [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:44]
 WARNING: [VRFC 10-3676] redeclaration of ansi port 'stallD' is not allowed [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:53]
-INFO: [VRFC 10-2458] undeclared symbol equalE, assumed default net type wire [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:92]
-INFO: [VRFC 10-2458] undeclared symbol branchE, assumed default net type wire [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:92]
-INFO: [VRFC 10-2458] undeclared symbol branchM, assumed default net type wire [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:94]
-INFO: [VRFC 10-2458] undeclared symbol pcM, assumed default net type wire [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:97]
-WARNING: [VRFC 10-2938] 'pcM' is already implicitly declared on line 97 [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:145]
-WARNING: [VRFC 10-2938] 'branchE' is already implicitly declared on line 92 [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:165]
-WARNING: [VRFC 10-2938] 'equalE' is already implicitly declared on line 92 [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:169]
-INFO: [VRFC 10-2458] undeclared symbol preErrorM, assumed default net type wire [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:172]
+INFO: [VRFC 10-2458] undeclared symbol branchM, assumed default net type wire [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:97]
+INFO: [VRFC 10-2458] undeclared symbol pcM, assumed default net type wire [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:100]
+WARNING: [VRFC 10-2938] 'pcM' is already implicitly declared on line 100 [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:148]
+INFO: [VRFC 10-2458] undeclared symbol branchE, assumed default net type wire [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:156]
+WARNING: [VRFC 10-2938] 'branchE' is already implicitly declared on line 156 [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:168]
+INFO: [VRFC 10-2458] undeclared symbol preErrorM, assumed default net type wire [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:175]
+WARNING: [VRFC 10-3380] identifier 'equalE' is used before its declaration [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:84]
 INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/eqcmp.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module eqcmp
 INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/flopenr.v" into library xil_defaultlib

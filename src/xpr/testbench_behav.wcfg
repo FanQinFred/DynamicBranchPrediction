@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="1000001fs"></ZoomEndTime>
-      <Cursor1Time time="177980fs"></Cursor1Time>
+      <ZoomStartTime time="246340fs"></ZoomStartTime>
+      <ZoomEndTime time="557941fs"></ZoomEndTime>
+      <Cursor1Time time="340000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="175"></NameColumnWidth>
-      <ValueColumnWidth column_width="145"></ValueColumnWidth>
+      <ValueColumnWidth column_width="135"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="76" />
+   <WVObjectSize size="74" />
    <wvobject fp_name="/testbench/dut/mips/dp/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -28,13 +28,37 @@
       <obj_property name="ElementShortName">rst</obj_property>
       <obj_property name="ObjectShortName">rst</obj_property>
    </wvobject>
+   <wvobject fp_name="/testbench/dut/mips/dp/pred_takeE" type="logic">
+      <obj_property name="ElementShortName">pred_takeE</obj_property>
+      <obj_property name="ObjectShortName">pred_takeE</obj_property>
+   </wvobject>
    <wvobject fp_name="/testbench/dut/mips/dp/pcF" type="array">
       <obj_property name="ElementShortName">pcF[31:0]</obj_property>
       <obj_property name="ObjectShortName">pcF[31:0]</obj_property>
    </wvobject>
+   <wvobject fp_name="/testbench/dut/mips/dp/pcnext" type="array">
+      <obj_property name="ElementShortName">pcnext[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pcnext[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/dut/mips/dp/pcE" type="array">
+      <obj_property name="ElementShortName">pcE[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pcE[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/dut/mips/dp/pcM" type="array">
+      <obj_property name="ElementShortName">pcM[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pcM[31:0]</obj_property>
+   </wvobject>
    <wvobject fp_name="/testbench/dut/mips/dp/instrF" type="array">
       <obj_property name="ElementShortName">instrF[31:0]</obj_property>
       <obj_property name="ObjectShortName">instrF[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/dut/mips/dp/preErrorE" type="logic">
+      <obj_property name="ElementShortName">preErrorE</obj_property>
+      <obj_property name="ObjectShortName">preErrorE</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/dut/mips/dp/branchE" type="logic">
+      <obj_property name="ElementShortName">branchE</obj_property>
+      <obj_property name="ObjectShortName">branchE</obj_property>
    </wvobject>
    <wvobject fp_name="/testbench/dut/mips/dp/pcsrcD" type="logic">
       <obj_property name="ElementShortName">pcsrcD</obj_property>
@@ -276,37 +300,13 @@
       <obj_property name="ElementShortName">flushM</obj_property>
       <obj_property name="ObjectShortName">flushM</obj_property>
    </wvobject>
-   <wvobject fp_name="/testbench/dut/mips/dp/preErrorE" type="logic">
-      <obj_property name="ElementShortName">preErrorE</obj_property>
-      <obj_property name="ObjectShortName">preErrorE</obj_property>
-   </wvobject>
    <wvobject fp_name="/testbench/dut/mips/dp/pred_takeD" type="logic">
       <obj_property name="ElementShortName">pred_takeD</obj_property>
       <obj_property name="ObjectShortName">pred_takeD</obj_property>
    </wvobject>
-   <wvobject fp_name="/testbench/dut/mips/dp/pred_takeE" type="logic">
-      <obj_property name="ElementShortName">pred_takeE</obj_property>
-      <obj_property name="ObjectShortName">pred_takeE</obj_property>
-   </wvobject>
-   <wvobject fp_name="/testbench/dut/mips/dp/actual_takeE" type="logic">
-      <obj_property name="ElementShortName">actual_takeE</obj_property>
-      <obj_property name="ObjectShortName">actual_takeE</obj_property>
-   </wvobject>
-   <wvobject fp_name="/testbench/dut/mips/dp/pcD" type="logic">
-      <obj_property name="ElementShortName">pcD</obj_property>
-      <obj_property name="ObjectShortName">pcD</obj_property>
-   </wvobject>
-   <wvobject fp_name="/testbench/dut/mips/dp/pcE" type="logic">
-      <obj_property name="ElementShortName">pcE</obj_property>
-      <obj_property name="ObjectShortName">pcE</obj_property>
-   </wvobject>
-   <wvobject fp_name="/testbench/dut/mips/dp/pcM" type="logic">
-      <obj_property name="ElementShortName">pcM</obj_property>
-      <obj_property name="ObjectShortName">pcM</obj_property>
-   </wvobject>
-   <wvobject fp_name="/testbench/dut/mips/dp/branchE" type="logic">
-      <obj_property name="ElementShortName">branchE</obj_property>
-      <obj_property name="ObjectShortName">branchE</obj_property>
+   <wvobject fp_name="/testbench/dut/mips/dp/pcD" type="array">
+      <obj_property name="ElementShortName">pcD[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pcD[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/testbench/dut/mips/dp/branchM" type="logic">
       <obj_property name="ElementShortName">branchM</obj_property>
@@ -315,13 +315,5 @@
    <wvobject fp_name="/testbench/dut/mips/dp/equalE" type="logic">
       <obj_property name="ElementShortName">equalE</obj_property>
       <obj_property name="ObjectShortName">equalE</obj_property>
-   </wvobject>
-   <wvobject fp_name="/testbench/dut/mips/dp/pcnext" type="logic">
-      <obj_property name="ElementShortName">pcnext</obj_property>
-      <obj_property name="ObjectShortName">pcnext</obj_property>
-   </wvobject>
-   <wvobject fp_name="/testbench/dut/mips/dp/preErrorM" type="logic">
-      <obj_property name="ElementShortName">preErrorM</obj_property>
-      <obj_property name="ObjectShortName">preErrorM</obj_property>
    </wvobject>
 </wave_config>

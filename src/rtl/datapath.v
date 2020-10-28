@@ -75,11 +75,13 @@ module datapath(
 
 	wire preErrorE;
 	wire pred_takeD,pred_takeE;
-	wire actual_takeE;
 
 	assign flushD=flushE;
 	assign flushE=flushM;
 	assign flushM=preErrorM;
+
+	wire actual_takeE,actual_takeM;
+	assign actual_takeE=equalE & branchE;
 
 	//动态分支预测模块
 	branch_predict branch_predict(
@@ -89,7 +91,8 @@ module datapath(
 		.flushD(flushD),.flushE(flushE),.flushM(flushM),
 		.stallD(stallD),
 		.pred_takeE(pred_takeE),            // 预测的是否跳转
-		.actual_takeE(equalE & branchE),    // 实际是否跳转
+		.actual_takeE(actual_takeE),    // 实际是否跳转
+		.actual_takeM(actual_takeM),
 
 	    .branchM(branchM),
 
@@ -150,7 +153,7 @@ module datapath(
 
     // 分支预测不正确则回退
 	wire [31:0] pcnext;
-	mux2 #(32) pcError(pcnextFD,pcM,preErrorE,pcnext);  //地址计算部分
+	mux2 #(32) pcError(pcnextFD,pcM,preErrorE & branchE,pcnext);  //地址计算部分
 
 	//取指触发器
 	pc #(32) pcreg(clk,rst,~stallF,pcnext,pcF);  //地址计算部分
@@ -171,6 +174,7 @@ module datapath(
     //preErrorM
 	floprc #(32) preErrorEM(clk,rst,flushE,preErrorE,preErrorM);
 
+	floprc #(32) actual_takeEM(clk,rst,flushE,actual_takeE,actual_takeM);
 
 
 
