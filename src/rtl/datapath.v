@@ -142,13 +142,14 @@ module datapath(
 	mux2 #(32) pcbrmux(pcplus4F,pcbranchD,pcsrcD,pcnextbrFD);  //地址计算部分
 	mux2 #(32) pcmux(pcnextbrFD, {pcplus4D[31:28],instrD[25:0],2'b00}, jumpD, pcnextFD);  //地址计算部分
 
-	wire pcD,pcE,pcM;
+	wire [31:0] pcD,pcE,pcM;
 
 	//寄存器访问
 	regfile rf(clk,regwriteW,rsD,rtD,writeregW,resultW,srcaD,srcbD);
 
 
     // 分支预测不正确则回退
+	wire [31:0] pcnext;
 	mux2 #(32) pcError(pcnextFD,pcM,preErrorE,pcnext);  //地址计算部分
 
 	//取指触发器
