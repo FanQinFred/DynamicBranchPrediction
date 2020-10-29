@@ -68,16 +68,16 @@ module datapath(
 	//写回级信号
 	wire [4:0] writeregW;
 	wire [31:0] aluoutW,readdataW,resultW;
-
-	assign flushD=flushE;
 	
-	wire flushM;
+	wire flushM,preErrorM;
 
 	wire preErrorE;
 	wire pred_takeD,pred_takeE;
 
+	wire hazard_flushE;
+
 	assign flushD=flushE;
-	assign flushE=flushM;
+	assign flushE=flushM | hazard_flushE;
 	assign flushM=preErrorM;
 
 	wire actual_takeE,actual_takeM;
@@ -125,7 +125,7 @@ module datapath(
 		.memtoregE(memtoregE),
 		.forwardaE(forwardaE),
 		.forwardbE(forwardbE),
-		.flushE(flushE),
+		.flushE(hazard_flushE),
 		
 		//内存访问级信号
 		.writeregM(writeregM),
@@ -142,7 +142,8 @@ module datapath(
 	);
 
 	//下一个指令地址计算
-	mux2 #(32) pcbrmux(pcplus4F,pcbranchD,pcsrcD,pcnextbrFD);  //地址计算部分
+	//mux2 #(32) pcbrmux(pcplus4F,pcbranchD,pcsrcD,pcnextbrFD);  //地址计算部分
+    mux2 #(32) pcbrmux(pcplus4F,pcbranchD,pred_takeD,pcnextbrFD);  //地址计算部分
 	mux2 #(32) pcmux(pcnextbrFD, {pcplus4D[31:28],instrD[25:0],2'b00}, jumpD, pcnextFD);  //地址计算部分
 
 	wire [31:0] pcD,pcE,pcM;
@@ -153,28 +154,28 @@ module datapath(
 
     // 分支预测不正确则回退
 	wire [31:0] pcnext;
-	mux2 #(32) pcError(pcnextFD,pcM,preErrorE & branchE,pcnext);  //地址计算部分
+	mux2 #(32) pcError(pcnextFD,pcM,preErrorM & branchM,pcnext);  //地址计算部分
 
 	//取指触发器
-	pc #(32) pcreg(clk,rst,~stallF,pcnext,pcF);  //地址计算部分
+	pc #(32) pcreg(clk,rst,1'b1,pcnext,pcF);  //地址计算部分
 	adder pcadd1(pcF,32'b100,pcplus4F);  //地址计算部分
     
 	//new
 	flopenrc #(32) pcFD(clk,rst,~stallD,flushD,pcF,pcD);
 	floprc #(32) pcDE(clk,rst,flushE,pcD,pcE);
-	floprc #(32) pcEM(clk,rst,flushE,pcE,pcM);
+	floprc #(32) pcEM(clk,rst,flushM,pcE,pcM);
 	floprc #(32) pred_takeD_DE(clk,rst,flushE,pred_takeD,pred_takeE);
 	//branchD, branchE,branchM
 	wire branchE,branchM;
 	floprc #(32) branchDE(clk,rst,flushE,branchD,branchE);
-	floprc #(32) branchEM(clk,rst,flushE,branchE,branchM);
+	floprc #(32) branchEM(clk,rst,flushM,branchE,branchM);
 	//equalE
 	wire equalE;
 	floprc #(32) equalDE(clk,rst,flushE,equalD,equalE);
     //preErrorM
-	floprc #(32) preErrorEM(clk,rst,flushE,preErrorE,preErrorM);
+	floprc #(32) preErrorEM(clk,rst,flushM,preErrorE,preErrorM);
 
-	floprc #(32) actual_takeEM(clk,rst,flushE,actual_takeE,actual_takeM);
+	floprc #(32) actual_takeEM(clk,rst,flushM,actual_takeE,actual_takeM);
 
 
 
