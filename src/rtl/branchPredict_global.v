@@ -1,7 +1,7 @@
 // Stage: IF | ID | EX | MEM |WB
 //
 
-module branch_predict (
+module branch_predict_global (
     input wire clk, rst,
 
     input wire[31:0] instrD,
@@ -9,43 +9,43 @@ module branch_predict (
     input wire flushD,flushE,flushM,
     input wire stallD,
 
-    input wire pred_takeE,      // 预测的是否跳�???
-    input wire actual_takeE,    // 实际是否跳转
+    input wire pred_takeE,      // 妫板嫭绁撮惃鍕Ц閸氾箒鐑﹂敓锟�???
+    input wire actual_takeE,    // 鐎圭偤妾弰顖氭儊鐠哄疇娴�
     input wire actual_takeD,
 
     input wire branchD,
     input wire [31:0] pcF,
 
-    output wire pred_takeD,    // D阶段使用
-    output wire preErrorE      // E阶段判断预测是否正确
+    output wire pred_takeD,    // D闂冭埖顔屾担璺ㄦ暏
+    output wire preErrorE      // E闂冭埖顔岄崚銈嗘焽妫板嫭绁撮弰顖氭儊濮濓絿鈥�
 );
 
-    wire pred_takeF;    // 预测是否跳转 
+    wire pred_takeF;    // 妫板嫭绁撮弰顖氭儊鐠哄疇娴� 
 
     reg pred_takeD_reg;
 
-    //判断译码阶段是否是分支指�???
+    //閸掋倖鏌囩拠鎴犵垳闂冭埖顔岄弰顖氭儊閺勵垰鍨庨弨顖涘瘹閿燂拷???
 
     
-    //EX阶段判断预测是否正确
+    //EX闂冭埖顔岄崚銈嗘焽妫板嫭绁撮弰顖氭儊濮濓絿鈥�
     assign preErrorE = (actual_takeE != pred_takeE);
 
-    // 译码阶段输出�???终的预测结果
+    // 鐠囨垹鐖滈梼鑸殿唽鏉堟挸鍤敓锟�???缂佸牏娈戞０鍕ゴ缂佹挻鐏�
     assign pred_takeD = branchD & pred_takeD_reg;  
 
-    // 定义参数
+    // 鐎规矮绠熼崣鍌涙殶
     parameter Strongly_not_taken = 2'b00, Weakly_not_taken = 2'b01, Weakly_taken = 2'b10, Strongly_taken = 2'b11;
     parameter PHT_DEPTH = 20;
     parameter GHR_WIDTH = 20;
 
-    reg [GHR_WIDTH-1:0] GHR;  //全局历史
+    reg [GHR_WIDTH-1:0] GHR;  //閸忋劌鐪崢鍡楀蕉
     reg [1:0] PHT [(1<<PHT_DEPTH)-1:0];
     
     integer i,j;
     wire [(PHT_DEPTH-1):0] PHT_index;
     assign PHT_index = GHR ^ pcF[30:11];
 
-    // 在取指阶段预测是否会跳转，并经过流水线传递给译码阶段�???
+    // 閸︺劌褰囬幐鍥▉濞堢敻顣╁ù瀣Ц閸氾缚绱扮捄瀹犳祮閿涘苯鑻熺紒蹇氱箖濞翠焦鎸夌痪澶哥炊闁帞绮扮拠鎴犵垳闂冭埖顔岄敓锟�???
     assign pred_takeF = PHT[PHT_index][1];
 
     always @(posedge clk) begin
