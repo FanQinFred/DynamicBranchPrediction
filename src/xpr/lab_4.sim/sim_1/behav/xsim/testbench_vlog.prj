@@ -5,6 +5,7 @@ verilog xil_defaultlib  \
 "../../../../../rtl/adder.v" \
 "../../../../../rtl/alu.v" \
 "../../../../../rtl/aludec.v" \
+"../../../../../rtl/branchpre.v" \
 "../../../../../rtl/controller.v" \
 "../../../../../rtl/datapath.v" \
 "../../../../../rtl/eqcmp.v" \
