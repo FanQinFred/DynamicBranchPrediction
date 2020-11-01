@@ -8,6 +8,12 @@ WARNING: [VRFC 10-3091] actual bit length 3 differs from formal bit length 8 for
 WARNING: [VRFC 10-3091] actual bit length 3 differs from formal bit length 8 for port 'q' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/controller.v:60]
 WARNING: [VRFC 10-3091] actual bit length 2 differs from formal bit length 8 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/controller.v:65]
 WARNING: [VRFC 10-3091] actual bit length 2 differs from formal bit length 8 for port 'q' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/controller.v:66]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:167]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:170]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:171]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:174]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:176]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:178]
 Completed static elaboration
 Starting simulation data flow analysis
 Completed simulation data flow analysis
@@ -17,17 +23,18 @@ Compiling module xil_defaultlib.aludec
 Compiling module xil_defaultlib.floprc
 Compiling module xil_defaultlib.flopr
 Compiling module xil_defaultlib.controller
+Compiling module xil_defaultlib.branch_predict
 Compiling module xil_defaultlib.hazard
 Compiling module xil_defaultlib.mux2(WIDTH=32)
 Compiling module xil_defaultlib.regfile
 Compiling module xil_defaultlib.pc(WIDTH=32)
 Compiling module xil_defaultlib.adder
-Compiling module xil_defaultlib.flopenr(WIDTH=32)
 Compiling module xil_defaultlib.flopenrc(WIDTH=32)
+Compiling module xil_defaultlib.floprc(WIDTH=32)
+Compiling module xil_defaultlib.flopenr(WIDTH=32)
 Compiling module xil_defaultlib.signext
 Compiling module xil_defaultlib.sl2
 Compiling module xil_defaultlib.eqcmp
-Compiling module xil_defaultlib.floprc(WIDTH=32)
 Compiling module xil_defaultlib.floprc(WIDTH=5)
 Compiling module xil_defaultlib.mux3(WIDTH=32)
 Compiling module xil_defaultlib.alu
