@@ -75,33 +75,35 @@ module datapath(
 	wire pred_takeD,pred_takeE;
 
 	wire hazard_flushE;
-
+	wire actual_takeD;
 	assign flushD=flushE;
 	assign flushE=flushM | hazard_flushE;
 	assign flushM=preErrorM;
 
 	wire actual_takeE,actual_takeM;
-	assign actual_takeE=equalE & branchE;
-
+	assign actual_takeD = equalD & branchD;
 	//动态分支预测模块
 	branch_predict branch_predict(
-		//input
-		.clk(clk), .rst(rst),
-		.instrD(instrD),
-		.flushD(flushD),.flushE(flushE),.flushM(flushM),
-		.stallD(stallD),
-		.pred_takeE(pred_takeE),            // 预测的是否跳转
-		.actual_takeE(actual_takeE),    // 实际是否跳转
-		.actual_takeM(actual_takeM),
+    .clk(clk), 
+	.rst(rst),
 
-	    .branchM(branchM),
+    .instrD(instrD),
 
-		.pcF(pcF),
-		.pcM(pcM),
-		//output
-		.pred_takeD(pred_takeD),       // D阶段使用
-		.preErrorE(preErrorE)          // E阶段判断预测是否正确
-    );
+    .flushD(flushD),
+	.flushE(flushE),
+	.flushM(flushM),
+    .stallD(stallD),
+	.branchD(branchD),
+    .pred_takeE(pred_takeE),      // 预测的是否跳�???
+    .actual_takeE(actual_takeE),    // 实际是否跳转
+    .actual_takeD(actual_takeD),
+
+
+    .pcF(pcF),
+
+    .pred_takeD(pred_takeD),    // D阶段使用
+    .preErrorE(preErrorE)      // E阶段判断预测是否正确
+);
 
 	//冒险模块
 	hazard h(
@@ -166,15 +168,14 @@ module datapath(
 	floprc #(32) pcEM(clk,rst,flushM,pcE,pcM);
 	floprc #(32) pred_takeD_DE(clk,rst,flushE,pred_takeD,pred_takeE);
 	//branchD, branchE,branchM
-	wire branchE,branchM;
+	wire branchE;
 	floprc #(32) branchDE(clk,rst,flushE,branchD,branchE);
 	floprc #(32) branchEM(clk,rst,flushM,branchE,branchM);
 	//equalE
 	wire equalE;
-	floprc #(32) equalDE(clk,rst,flushE,equalD,equalE);
     //preErrorM
 	floprc #(32) preErrorEM(clk,rst,flushM,preErrorE,preErrorM);
-
+	floprc #(32) actual_takeDE(clk,rst,flushE,actual_takeD,actual_takeE);
 	floprc #(32) actual_takeEM(clk,rst,flushM,actual_takeE,actual_takeM);
 
 
