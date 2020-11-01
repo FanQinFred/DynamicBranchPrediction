@@ -9,14 +9,14 @@ module branch_predict (
     input wire flushD,flushE,flushM,
     input wire stallD,
 
-    input wire pred_takeE,      // 预测的是否跳�?
+    input wire pred_takeE,      // 预测的是否跳�??
     input wire actual_takeE,    // 实际是否跳转
-    input wire actual_takeM,
+    input wire actual_takeD,
 
     input wire branchM,
 
     input wire [31:0] pcF,
-    input wire [31:0] pcM,
+    input wire [31:0] pcD,
 
     output wire pred_takeD,    // D阶段使用
     output wire preErrorE      // E阶段判断预测是否正确
@@ -26,33 +26,28 @@ module branch_predict (
 
     reg pred_takeD_reg;
 
-    //判断译码阶段是否是分支指�?
+    //判断译码阶段是否是分支指�??
     assign branchD = (instrD[31:26]==6'b000100);
     
     //EX阶段判断预测是否正确
     assign preErrorE = (actual_takeE != pred_takeE);
 
-    // 译码阶段输出�?终的预测结果
+    // 译码阶段输出�??终的预测结果
     assign pred_takeD = branchD & pred_takeD_reg;  
 
     // 定义参数
     parameter Strongly_not_taken = 2'b00, Weakly_not_taken = 2'b01, Weakly_taken = 2'b10, Strongly_taken = 2'b11;
-    parameter PHT_DEPTH = 6;
-    parameter BHT_DEPTH = 10;
+    parameter PHT_DEPTH = 20;
+    parameter GHR_WIDTH = 20;
 
-    reg [5:0] BHT [(1<<BHT_DEPTH)-1 : 0];  //前六次branch历史记录
+    reg [GHR_WIDTH-1:0] GHR;  //全局历史
     reg [1:0] PHT [(1<<PHT_DEPTH)-1:0];
     
     integer i,j;
     wire [(PHT_DEPTH-1):0] PHT_index;
-    wire [(BHT_DEPTH-1):0] BHT_index;
-    wire [(PHT_DEPTH-1):0] BHR_value;
+    assign PHT_index = GHR ^ pcF[30:11];
 
-    assign BHT_index = pcF[11:2];     
-    assign BHR_value = BHT[BHT_index];  
-    assign PHT_index = BHR_value;
-
-    // 在取指阶段预测是否会跳转，并经过流水线传递给译码阶段�?
+    // 在取指阶段预测是否会跳转，并经过流水线传递给译码阶段�??
     assign pred_takeF = PHT[PHT_index][1];
 
     always @(posedge clk) begin
@@ -65,24 +60,18 @@ module branch_predict (
     end
 
     wire [(PHT_DEPTH-1):0] update_PHT_index;
-    wire [(BHT_DEPTH-1):0] update_BHT_index;
-    wire [(PHT_DEPTH-1):0] update_BHR_value;
-
-    assign update_BHT_index = pcM[11:2];
-    assign update_BHR_value = BHT[update_BHT_index];
-    assign update_PHT_index = update_BHR_value;
+    
+    assign update_PHT_index = GHR;
 
     always@(posedge clk) begin
         if(rst) begin
-            for(j = 0; j < (1<<BHT_DEPTH); j=j+1) begin
-                BHT[j] <= 0;
-            end
+            GHR <= 20'b0;
         end
-        else if(branchM & actual_takeM) begin
-            BHT[update_BHT_index]<={update_BHR_value[4:0],1'b1};
+        else if(branchD & actual_takeD) begin
+            GHR <= {GHR[GHR_WIDTH-2:0],1};
         end
-        else if(branchM & !actual_takeM) begin
-            BHT[update_BHT_index]<={update_BHR_value[4:0],1'b0};
+        else if(branchM & !actual_takeD) begin
+            GHR <= {GHR[GHR_WIDTH-2:0],0};
         end else begin
         end
     end
@@ -94,28 +83,28 @@ module branch_predict (
             end
         end
         else begin
-            if(branchM) begin
+            if(branchD) begin
                 case(PHT[update_PHT_index])
                     2'b11:
-                        case(actual_takeM)
+                        case(actual_takeD)
                             1'b1:PHT[update_PHT_index]<=2'b11;
                             1'b0:PHT[update_PHT_index]<=2'b10;
                             default:;
                         endcase
                     2'b10:
-                        case(actual_takeM)
+                        case(actual_takeD)
                             1'b1:PHT[update_PHT_index]<=2'b11;
                             1'b0:PHT[update_PHT_index]<=2'b01;
                             default:;
                         endcase
                     2'b01:
-                        case(actual_takeM)
+                        case(actual_takeD)
                             1'b1:PHT[update_PHT_index]<=2'b10;
                             1'b0:PHT[update_PHT_index]<=2'b00;
                             default:;
                         endcase
                     2'b00:
-                        case(actual_takeM)
+                        case(actual_takeD)
                             1'b1:PHT[update_PHT_index]<=2'b01;
                             1'b0:PHT[update_PHT_index]<=2'b00;
                             default:;
