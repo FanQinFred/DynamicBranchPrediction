@@ -8,14 +8,16 @@ WARNING: [VRFC 10-3091] actual bit length 3 differs from formal bit length 8 for
 WARNING: [VRFC 10-3091] actual bit length 3 differs from formal bit length 8 for port 'q' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/controller.v:60]
 WARNING: [VRFC 10-3091] actual bit length 2 differs from formal bit length 8 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/controller.v:65]
 WARNING: [VRFC 10-3091] actual bit length 2 differs from formal bit length 8 for port 'q' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/controller.v:66]
-WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:169]
-WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:172]
-WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:173]
-WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:177]
-WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:178]
-WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:179]
-WARNING: [VRFC 10-526] concatenation with unsized literal; will interpret as 32 bits [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/branchpre.v:69]
-WARNING: [VRFC 10-526] concatenation with unsized literal; will interpret as 32 bits [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/branchpre.v:72]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:207]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:210]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:211]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:216]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:217]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:218]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:219]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'd' [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/datapath.v:220]
+WARNING: [VRFC 10-526] concatenation with unsized literal; will interpret as 32 bits [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/branchPredict_global.v:69]
+WARNING: [VRFC 10-526] concatenation with unsized literal; will interpret as 32 bits [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/branchPredict_global.v:72]
 Completed static elaboration
 Starting simulation data flow analysis
 Completed simulation data flow analysis
@@ -25,7 +27,9 @@ Compiling module xil_defaultlib.aludec
 Compiling module xil_defaultlib.floprc
 Compiling module xil_defaultlib.flopr
 Compiling module xil_defaultlib.controller
-Compiling module xil_defaultlib.branch_predict
+Compiling module xil_defaultlib.branch_predict_local
+Compiling module xil_defaultlib.branch_predict_global
+Compiling module xil_defaultlib.branch_predict_choose
 Compiling module xil_defaultlib.hazard
 Compiling module xil_defaultlib.mux2(WIDTH=32)
 Compiling module xil_defaultlib.regfile

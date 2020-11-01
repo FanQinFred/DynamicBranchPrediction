@@ -3,10 +3,12 @@
 
 module branch_predict_choose (
     input wire clk, rst,
+    input wire flushD,flushE,flushM,stallD,
     input wire [31:0]pcF,pcM,
+    input wire branchM,
     input wire global_errorM,
     input wire local_errorM,
-    output wire pred_chooseD
+    output reg pred_chooseD
 );
 
     parameter strongly_global=2'b11,weakly_global=2'b10,weakly_local=2'b01,strongly_local=2'b00;
@@ -45,7 +47,7 @@ module branch_predict_choose (
             if(branchM) begin
                 case(CPHT[update_CPHT_index])
                     2'b11:
-                        case({global_errorM,local_error})
+                        case({global_errorM,local_errorM})
                             2'b00:CPHT[update_CPHT_index]<=2'b11;
                             2'b01:CPHT[update_CPHT_index]<=2'b11;
                             2'b10:CPHT[update_CPHT_index]<=2'b10;
@@ -53,7 +55,7 @@ module branch_predict_choose (
                             default:;
                         endcase
                     2'b10:
-                        case({global_errorM,local_error})
+                        case({global_errorM,local_errorM})
                             2'b00:CPHT[update_CPHT_index]<=2'b10;
                             2'b01:CPHT[update_CPHT_index]<=2'b11;
                             2'b10:CPHT[update_CPHT_index]<=2'b01;
@@ -61,7 +63,7 @@ module branch_predict_choose (
                             default:;
                         endcase
                     2'b01:
-                        case({global_errorM,local_error})
+                        case({global_errorM,local_errorM})
                             2'b00:CPHT[update_CPHT_index]<=2'b01;
                             2'b01:CPHT[update_CPHT_index]<=2'b10;
                             2'b10:CPHT[update_CPHT_index]<=2'b00;
@@ -69,7 +71,7 @@ module branch_predict_choose (
                             default:;
                         endcase
                     2'b00:
-                        case({global_errorM,local_error})
+                        case({global_errorM,local_errorM})
                             2'b00:CPHT[update_CPHT_index]<=2'b00;
                             2'b01:CPHT[update_CPHT_index]<=2'b01;
                             2'b10:CPHT[update_CPHT_index]<=2'b00;
