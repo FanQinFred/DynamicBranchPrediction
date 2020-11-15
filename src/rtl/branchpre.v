@@ -1,7 +1,10 @@
-
 // Stage: IF | ID | EX | MEM |WB
 //                    preErrorM
-
+//在F指阶段预测是否跳转；
+//D在译码阶段执行预测结果；
+//E在执行阶段判断是否预测正确；
+//M在提交阶段处理错误预测和更新PHT
+//pc用于BHT instruction用于判断是否跳转
 module branch_predict (
     input wire clk, rst,
 
@@ -10,7 +13,8 @@ module branch_predict (
     input wire flushD,flushE,flushM,
     input wire stallD,
 
-    input wire pred_takeE,      // 预测的是否跳�?
+    //E在执行阶段判断是否预测正确；
+    input wire pred_takeE,      // 预测的是否跳转
     input wire actual_takeE,    // 实际是否跳转
     input wire actual_takeM,
 
@@ -27,13 +31,13 @@ module branch_predict (
 
     reg pred_takeD_reg;
 
-    //判断译码阶段是否是分支指�?
+    //判断译码阶段是否是分支指令?
     assign branchD = (instrD[31:26]==6'b000100);
     
     //EX阶段判断预测是否正确
     assign preErrorE = (actual_takeE != pred_takeE);
 
-    // 译码阶段输出�?终的预测结果
+    // 译码阶段输出终的预测结果
     assign pred_takeD = branchD & pred_takeD_reg;  
 
     // 定义参数
@@ -53,11 +57,11 @@ module branch_predict (
     assign BHR_value = BHT[BHT_index];  
     assign PHT_index = BHR_value;
 
-    // 在取指阶段预测是否会跳转，并经过流水线传递给译码阶段�?
+    // 在取指阶段预测是否会跳转，并经过流水线传递给译码阶段
     assign pred_takeF = PHT[PHT_index][1];
 
     always @(posedge clk) begin
-        if(rst) begin
+        if(rst | flushD |flushE |flushM) begin
             pred_takeD_reg <= 0;
         end
         else if(~stallD) begin
@@ -79,10 +83,10 @@ module branch_predict (
                 BHT[j] <= 0;
             end
         end
-        else if(branchM & actual_takeE) begin
+        else if(branchM & actual_takeM) begin
             BHT[update_BHT_index]<={update_BHR_value[4:0],1'b1};
         end
-        else if(branchM & !actual_takeE) begin
+        else if(branchM & !actual_takeM) begin
             BHT[update_BHT_index]<={update_BHR_value[4:0],1'b0};
         end else begin
         end
@@ -98,25 +102,25 @@ module branch_predict (
             if(branchM) begin
                 case(PHT[update_PHT_index])
                     2'b11:
-                        case(actual_takeE)
+                        case(actual_takeM)
                             1'b1:PHT[update_PHT_index]<=2'b11;
                             1'b0:PHT[update_PHT_index]<=2'b10;
                             default:;
                         endcase
                     2'b10:
-                        case(actual_takeE)
+                        case(actual_takeM)
                             1'b1:PHT[update_PHT_index]<=2'b11;
                             1'b0:PHT[update_PHT_index]<=2'b01;
                             default:;
                         endcase
                     2'b01:
-                        case(actual_takeE)
+                        case(actual_takeM)
                             1'b1:PHT[update_PHT_index]<=2'b10;
                             1'b0:PHT[update_PHT_index]<=2'b00;
                             default:;
                         endcase
                     2'b00:
-                        case(actual_takeE)
+                        case(actual_takeM)
                             1'b1:PHT[update_PHT_index]<=2'b01;
                             1'b0:PHT[update_PHT_index]<=2'b00;
                             default:;
