@@ -59,7 +59,7 @@ module branch_predict (
 
     wire [(PHT_DEPTH-1):0] update_PHT_index;
     
-    assign update_PHT_index = GHR;
+    assign update_PHT_index = GHR ^ pcD[30:11];
 
     always@(posedge clk) begin
         if(rst) begin
