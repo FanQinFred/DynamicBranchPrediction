@@ -55,5 +55,3 @@ INFO: [VRFC 10-311] analyzing module top
 WARNING: [VRFC 10-3676] redeclaration of ansi port 'pc' is not allowed [C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/rtl/top.v:19]
 INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/sim/testbench.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module testbench
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/fanqi/Documents/GitHub/DynamicBranchPrediction/src/xpr/lab_4.sim/sim_1/behav/xsim/glbl.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module glbl
