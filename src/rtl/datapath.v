@@ -144,17 +144,13 @@ module datapath(
 	//下一个指令地址计算
 	//mux2 #(32) pcbrmux(pcplus4F,pcbranchD,pcsrcD,pcnextbrFD);  //地址计算部分
     mux2 #(32) pcbrmux(pcplus4F,pcbranchD,pred_takeD,pcnextbrFD);  //地址计算部分
-	mux2 #(32) pcmux(pcnextbrFD, {pcplus4D[31:28],instrD[25:0],2'b00}, jumpD, pcnextFD);  //地址计算部分
+	mux2 #(32) pcmux(pcnextbrFD, {pcplus4D[31:28],instrD[25:0],2'b00}, jumpD, pcnext);  //地址计算部分
 
+	wire [31:0] pcnext;
 	wire [31:0] pcD,pcE,pcM;
 
 	//寄存器访问
 	regfile rf(clk,regwriteW,rsD,rtD,writeregW,resultW,srcaD,srcbD);
-
-
-    // 分支预测不正确则回退
-	wire [31:0] pcnext;
-	mux2 #(32) pcError(pcnextFD,pcM,preErrorM & branchM,pcnext);  //地址计算部分
 
 	//取指触发器
 	pc #(32) pcreg(clk,rst,1'b1,pcnext,pcF);  //地址计算部分
@@ -172,12 +168,6 @@ module datapath(
 	//equalE
 	wire equalE;
 	floprc #(32) equalDE(clk,rst,flushE,equalD,equalE);
-    //preErrorM
-	floprc #(32) preErrorEM(clk,rst,flushM,preErrorE,preErrorM);
-
-	floprc #(32) actual_takeEM(clk,rst,flushM,actual_takeE,actual_takeM);
-
-
 
 	//译指触发器
 	flopenr #(32) r1D(clk,rst,~stallD,pcplus4F,pcplus4D);  //地址计算部分

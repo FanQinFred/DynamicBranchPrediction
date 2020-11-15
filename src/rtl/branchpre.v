@@ -1,3 +1,4 @@
+
 // Stage: IF | ID | EX | MEM |WB
 //                    preErrorM
 
@@ -56,7 +57,7 @@ module branch_predict (
     assign pred_takeF = PHT[PHT_index][1];
 
     always @(posedge clk) begin
-        if(rst | flushD |flushE |flushM) begin
+        if(rst) begin
             pred_takeD_reg <= 0;
         end
         else if(~stallD) begin
@@ -78,10 +79,10 @@ module branch_predict (
                 BHT[j] <= 0;
             end
         end
-        else if(branchM & actual_takeM) begin
+        else if(branchM & actual_takeE) begin
             BHT[update_BHT_index]<={update_BHR_value[4:0],1'b1};
         end
-        else if(branchM & !actual_takeM) begin
+        else if(branchM & !actual_takeE) begin
             BHT[update_BHT_index]<={update_BHR_value[4:0],1'b0};
         end else begin
         end
@@ -97,25 +98,25 @@ module branch_predict (
             if(branchM) begin
                 case(PHT[update_PHT_index])
                     2'b11:
-                        case(actual_takeM)
+                        case(actual_takeE)
                             1'b1:PHT[update_PHT_index]<=2'b11;
                             1'b0:PHT[update_PHT_index]<=2'b10;
                             default:;
                         endcase
                     2'b10:
-                        case(actual_takeM)
+                        case(actual_takeE)
                             1'b1:PHT[update_PHT_index]<=2'b11;
                             1'b0:PHT[update_PHT_index]<=2'b01;
                             default:;
                         endcase
                     2'b01:
-                        case(actual_takeM)
+                        case(actual_takeE)
                             1'b1:PHT[update_PHT_index]<=2'b10;
                             1'b0:PHT[update_PHT_index]<=2'b00;
                             default:;
                         endcase
                     2'b00:
-                        case(actual_takeM)
+                        case(actual_takeE)
                             1'b1:PHT[update_PHT_index]<=2'b01;
                             1'b0:PHT[update_PHT_index]<=2'b00;
                             default:;
