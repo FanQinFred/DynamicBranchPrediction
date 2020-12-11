@@ -9,7 +9,7 @@ module branch_predict (
     input wire flushD,flushE,flushM,
     input wire stallD,
 
-    input wire pred_takeE,      // 预测的是否跳�???
+    input wire pred_takeE,      // 预测的是否跳�????
     input wire actual_takeE,    // 实际是否跳转
     input wire actual_takeD,
 
@@ -24,13 +24,13 @@ module branch_predict (
 
     reg pred_takeD_reg;
 
-    //判断译码阶段是否是分支指�???
+    //判断译码阶段是否是分支指�????
 
     
     //EX阶段判断预测是否正确
     assign preErrorE = (actual_takeE != pred_takeE);
 
-    // 译码阶段输出�???终的预测结果
+    // 译码阶段输出�????终的预测结果
     assign pred_takeD = branchD & pred_takeD_reg;  
 
     // 定义参数
@@ -45,7 +45,7 @@ module branch_predict (
     wire [(PHT_DEPTH-1):0] PHT_index;
     assign PHT_index = GHR ^ pcF[30:11];
 
-    // 在取指阶段预测是否会跳转，并经过流水线传递给译码阶段�???
+    // 在取指阶段预测是否会跳转，并经过流水线传递给译码阶段�????
     assign pred_takeF = PHT[PHT_index][1];
 
     always @(posedge clk) begin
@@ -59,7 +59,7 @@ module branch_predict (
 
     wire [(PHT_DEPTH-1):0] update_PHT_index;
     
-    assign update_PHT_index = GHR ^ pcD[30:11];
+    assign update_PHT_index = GHR ^ pcF[30:11];
 
     always@(posedge clk) begin
         if(rst) begin
