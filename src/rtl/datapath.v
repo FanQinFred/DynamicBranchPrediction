@@ -2,34 +2,34 @@
 
 module datapath(
 	
-	input wire clk,rst,//时钟信号 重置信号
+	input wire clk,rst,//ʱ���ź� �����ź�
 	
-	//取指令阶段信号
-	output wire[31:0] pcF, //取指令级地址寄存器
-	input wire[31:0] instrF,// 取指令级的指令
+	//ȡָ��׶���??
+	output wire[31:0] pcF, //ȡָ���ַ�Ĵ�??
+	input wire[31:0] instrF,// ȡָ���ָ??
 
-	//指令译码阶段信号
-	input wire pcsrcD,branchD, //译码阶段地址来源 与 条件跳转指令，相等则分支
-	input wire jumpD,//无条件跳转指令地址
-	output wire equalD,//两个寄存器源操作数相等则有效
-	output wire[5:0] opD,functD,// 指令的操作码字段 //指令的功能码字段
+	//ָ������׶��ź�
+	input wire pcsrcD,branchD, //����׶ε�ַ��Դ ?? ������תָ�������֧
+	input wire jumpD,//��������תָ���ַ
+	output wire equalD,//�����Ĵ���Դ�������������Ч
+	output wire[5:0] opD,functD,// ָ��Ĳ������ֶ� //ָ��Ĺ������ֶ�
 
-	//运算级信号
-	input wire memtoregE,//指令执行级的存储器写寄存器控制信号
-	input wire alusrcE,regdstE,//执行指令级寄存器来源//指令执行级目标寄存器
-	input wire regwriteE,//计算级控制是否写入寄存器
-	input wire[2:0] alucontrolE,//计算单元计算类型选择
-	output wire flushE,//指令运算级刷新信号
+	//���㼶��??
+	input wire memtoregE,//ָ��ִ�м��Ĵ洢��д�Ĵ���������??
+	input wire alusrcE,regdstE,//ִ��ָ��Ĵ�����Դ//ָ��ִ�м�Ŀ��Ĵ���
+	input wire regwriteE,//���㼶�����Ƿ�д��Ĵ���
+	input wire[2:0] alucontrolE,//���㵥Ԫ��������ѡ��
+	output wire flushE,//ָ�����㼶ˢ����??
 
-	//内存访问级信号
-	input wire memtoregM,//内存操作级的存储器写寄存器控制信号
-	input wire regwriteM,//访问内存级控制是否写入寄存器
-	output wire[31:0] aluoutM,writedataM,//运算级的运算结果//待写回内存的值
-	input wire[31:0] readdataM,//内存级读出的数据
+	//�ڴ���ʼ���??
+	input wire memtoregM,//�ڴ�������Ĵ洢��д�Ĵ���������??
+	input wire regwriteM,//�����ڴ漶�����Ƿ�д��Ĵ���
+	output wire[31:0] aluoutM,writedataM,//���㼶��������//��д���ڴ��??
+	input wire[31:0] readdataM,//�ڴ漶����������
 
-	//写回级信号
-	input wire memtoregW,//写回级的存储器写寄存器控制信号
-	input wire regwriteW, //写回级读出的数据
+	//д�ؼ���??
+	input wire memtoregW,//д�ؼ��Ĵ洢��д�Ĵ���������??
+	input wire regwriteW, //д�ؼ�����������
 
 	output wire [4:0] rsE,rtE,rdE,
 	output wire [4:0] rsD,rtD,rdD,
@@ -40,13 +40,13 @@ module datapath(
 
 );
 	
-	//取指令阶段信号
+	//ȡָ��׶���??
 	wire stallF;
 
-	//地址控制信号
+	//��ַ�����ź�
 	wire [31:0] pcnextFD,pcnextbrFD,pcplus4F,pcbranchD;
 
-	//指令译码阶段信号
+	//ָ������׶��ź�
 	wire [31:0] pcplus4D,instrD;
 	wire forwardaD,forwardbD;
 	
@@ -54,7 +54,7 @@ module datapath(
 	wire [31:0] signimmD,signimmshD;
 	wire [31:0] srcaD,srca2D,srcbD,srcb2D;
 
-	//运算级信号
+	//���㼶��??
 	wire [1:0] forwardaE,forwardbE;
 	
 	wire [4:0] writeregE;
@@ -62,20 +62,94 @@ module datapath(
 	wire [31:0] srcaE,srca2E,srcbE,srcb2E,srcb3E;
 	wire [31:0] aluoutE;
 
-	//内存访问级信号
+	//�ڴ���ʼ���??
 	wire [4:0] writeregM;
 
-	//写回级信号
+	//д�ؼ���??
 	wire [4:0] writeregW;
 	wire [31:0] aluoutW,readdataW,resultW;
+	
+	wire flushM,preErrorM;
 
-	//冒险模块
+	wire preErrorE;
+	assign preErrorE = (pred_chooseD==1)? preErrorE_global:preErrorE_local;
+	wire preErrorE_global,preErrorE_local,pred_takeD_local,pred_takeD_global;
+	wire pred_takeD,pred_takeE;
+	assign pred_takeD = (pred_chooseD==1)? pred_takeD_global:pred_takeD_local;
+	wire hazard_flushE;
+	wire actual_takeD;
+	assign flushD=flushE;
+	assign flushE=flushM | hazard_flushE;
+	assign flushM=preErrorM;
+
+	wire actual_takeE,actual_takeM;
+	
+	assign actual_takeD = equalD & branchD;
+	branch_predict_local branch_predict_local(
+    .clk(clk), 
+	.rst(rst),
+
+    .instrD(instrD),
+
+    .flushD(flushD),
+	.flushE(flushE),
+	.flushM(flushM),
+    .stallD(stallD),
+
+    .pred_takeE(pred_takeE),      // Ԥ����Ƿ���???
+    .actual_takeE(actual_takeE),    // ʵ���Ƿ���ת
+    .actual_takeM(actual_takeM),
+
+    .branchM(branchM),
+
+    .pcF(pcF),
+    .pcM(pcM),
+
+    .pred_takeD(pred_takeD_local),    // D�׶�ʹ��
+    .preErrorE(preErrorE_local)      // E�׶��ж�Ԥ���Ƿ���ȷ
+);
+
+wire pred_chooseD;
+branch_predict_global branch_predict_global(
+    .clk(clk), 
+	.rst(rst),
+
+    .instrD(instrD),
+
+    .flushD(flushD),
+	.flushE(flushE),
+	.flushM(flushM),
+    .stallD(stallD),
+
+    .pred_takeE(pred_takeE),      // 棰勬祴鐨勬槸鍚﹁烦锟�????
+    .actual_takeE(actual_takeE),    // 瀹為檯鏄惁璺宠�?
+    .actual_takeD(actual_takeD),
+
+    .branchD(branchD),
+    .pcF(pcF),
+
+    .pred_takeD(pred_takeD_global),    // D闃舵浣跨敤
+    .preErrorE(preErrorE_global)      // E闃舵鍒ゆ柇棰勬祴鏄惁姝ｇ�?
+);
+	branch_predict_choose branch_predict_choose(
+    .clk(clk), 
+	.rst(rst),
+    .flushD(flushD),.flushE(flushE),.flushM(flushM),.stallD(stallD),
+    .pcF(pcF),
+	.pcM(pcM),
+	.branchM(branchM),
+    .global_errorM(preErrorM_global),
+    .local_errorM(preErrorM_local),
+    .pred_chooseD(pred_chooseD)
+);
+
+	//ð��ģ��
 	hazard h(
 
-		//取指令阶段信号
+		//ȡָ��׶���??
 		.stallF(stallF),
 
-		//指令译码阶段信号
+		//ָ������׶��ź�
 		.rsD(rsD),
 		.rtD(rtD),
 		.branchD(branchD), 
@@ -83,7 +157,7 @@ module datapath(
 		.forwardbD(forwardbD),
 		.stallD(stallD),
 
-		//运算级信号
+		//���㼶��??
 		.rsE(rsE),
 		.rtE(rtE),
 		.writeregE(writeregE),
@@ -91,14 +165,14 @@ module datapath(
 		.memtoregE(memtoregE),
 		.forwardaE(forwardaE),
 		.forwardbE(forwardbE),
-		.flushE(flushE),
+		.flushE(hazard_flushE),
 		
-		//内存访问级信号
+		//�ڴ���ʼ���??
 		.writeregM(writeregM),
 		.regwriteM(regwriteM),
 		.memtoregM(memtoregM),
 
-		//写回级信号
+		//д�ؼ���??
 		.writeregW(writeregW),
 		.regwriteW(regwriteW),
 
@@ -107,26 +181,54 @@ module datapath(
 		
 	);
 
-	//下一个指令地址计算
-	mux2 #(32) pcbrmux(pcplus4F,pcbranchD,pcsrcD,pcnextbrFD);  //地址计算部分
-	mux2 #(32) pcmux(pcnextbrFD, {pcplus4D[31:28],instrD[25:0],2'b00}, jumpD, pcnextFD);  //地址计算部分
+	//��һ��ָ���ַ����
+	//mux2 #(32) pcbrmux(pcplus4F,pcbranchD,pcsrcD,pcnextbrFD);  //��ַ���㲿��
+    mux2 #(32) pcbrmux(pcplus4F,pcbranchD,pred_takeD,pcnextbrFD);  //��ַ���㲿��
+	mux2 #(32) pcmux(pcnextbrFD, {pcplus4D[31:28],instrD[25:0],2'b00}, jumpD, pcnextFD);  //��ַ���㲿��
 
-	//寄存器访问
+	wire [31:0] pcD,pcE,pcM;
+
+	//�Ĵ�����??
 	regfile rf(clk,regwriteW,rsD,rtD,writeregW,resultW,srcaD,srcbD);
 
 
-	//取指触发器
-	pc #(32) pcreg(clk,rst,~stallF,pcnextFD,pcF);  //地址计算部分
-	adder pcadd1(pcF,32'b100,pcplus4F);  //地址计算部分
+    // ��֧Ԥ�ⲻ��ȷ�����
+	wire [31:0] pcnext;
+	mux2 #(32) pcError(pcnextFD,pcM,preErrorM & branchM,pcnext);  //��ַ���㲿��
 
-	//译指触发器
-	flopenr #(32) r1D(clk,rst,~stallD,pcplus4F,pcplus4D);  //地址计算部分
+	//ȡָ����??
+	pc #(32) pcreg(clk,rst,1'b1,pcnext,pcF);  //��ַ���㲿��
+	adder pcadd1(pcF,32'b100,pcplus4F);  //��ַ���㲿��
+    
+	//new
+	flopenrc #(32) pcFD(clk,rst,~stallD,flushD,pcF,pcD);
+	floprc #(32) pcDE(clk,rst,flushE,pcD,pcE);
+	floprc #(32) pcEM(clk,rst,flushM,pcE,pcM);
+	floprc #(32) pred_takeD_DE(clk,rst,flushE,pred_takeD,pred_takeE);
+	//branchD, branchE,branchM
+	wire branchE;
+	floprc #(32) branchDE(clk,rst,flushE,branchD,branchE);
+	floprc #(32) branchEM(clk,rst,flushM,branchE,branchM);
+	//equalE
+	wire equalE;
+    //preErrorM
+	wire preErrorM_local,preErrorM_global;
+	floprc #(32) preErrorEM(clk,rst,flushM,preErrorE,preErrorM);
+	floprc #(32) preErrorEM_local(clk,rst,flushM,preErrorE_local,preErrorM_local);
+	floprc #(32) preErrorEM_global(clk,rst,flushM,preErrorE_global,preErrorM_global);
+	floprc #(32) actual_takeDE(clk,rst,flushE,actual_takeD,actual_takeE);
+	floprc #(32) actual_takeEM(clk,rst,flushM,actual_takeE,actual_takeM);
+
+
+
+	//��ָ����??
+	flopenr #(32) r1D(clk,rst,~stallD,pcplus4F,pcplus4D);  //��ַ���㲿��
 	flopenrc #(32) r2D(clk,rst,~stallD,flushD,instrF,instrD);
 
-	signext se(instrD[15:0],signimmD); //32位符号扩展立即数
-	sl2 immsh(signimmD,signimmshD); //地址计算部分
+	signext se(instrD[15:0],signimmD); //32λ������չ������
+	sl2 immsh(signimmD,signimmshD); //��ַ���㲿��
 
-	adder pcadd2(pcplus4D,signimmshD,pcbranchD);  //地址计算部分
+	adder pcadd2(pcplus4D,signimmshD,pcbranchD);  //��ַ���㲿��
 
 	mux2 #(32) forwardamux(srcaD,aluoutM,forwardaD,srca2D);
 	mux2 #(32) forwardbmux(srcbD,aluoutM,forwardbD,srcb2D);
@@ -138,7 +240,7 @@ module datapath(
 	assign rtD = instrD[20:16];
 	assign rdD = instrD[15:11];
 
-	//运算级信号触发器
+	//���㼶�źŴ�����
 	floprc #(32) r1E(clk,rst,flushE,srcaD,srcaE);
 	floprc #(32) r2E(clk,rst,flushE,srcbD,srcbE);
 	floprc #(32) r3E(clk,rst,flushE,signimmD,signimmE);
@@ -152,12 +254,12 @@ module datapath(
 	alu alu(srca2E,srcb3E,alucontrolE,aluoutE);
 	mux2 #(5) wrmux(rtE,rdE,regdstE,writeregE);
 
-	//内存访问级信号触发器
+	//�ڴ���ʼ��źŴ�����
 	flopr #(32) r1M(clk,rst,srcb2E,writedataM);
 	flopr #(32) r2M(clk,rst,aluoutE,aluoutM);
 	flopr #(5) r3M(clk,rst,writeregE,writeregM);
 
-	//写回级信号触发器
+	//д�ؼ��źŴ�����
 	flopr #(32) r1W(clk,rst,aluoutM,aluoutW);
 	flopr #(32) r2W(clk,rst,readdataM,readdataW);
 	flopr #(5) r3W(clk,rst,writeregM,writeregW);

@@ -69,12 +69,12 @@ module hazard(
 	assign #1 branchstallD = branchD & ( regwriteE  &  (writeregE == rsD | writeregE == rtD)  |  memtoregM & (writeregM == rsD | writeregM == rtD) );
 
     //F级暂停
-	assign #1 stallF = lwstallD | branchstallD;
+	assign #1 stallF = lwstallD;
 
     //D级暂停
-	assign #1 stallD = lwstallD | branchstallD;
+	assign #1 stallD = lwstallD;
 
 	//E级刷新
-	assign #1 flushE = lwstallD | branchstallD;
+	assign #1 flushE = lwstallD;
 
 endmodule
